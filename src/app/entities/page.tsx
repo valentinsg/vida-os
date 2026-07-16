@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
+import { GitHubSyncButton } from "./GitHubSyncButton";
 import {
   Table,
   TableBody,
@@ -20,10 +21,15 @@ export default async function EntitiesPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
-      <h1 className="text-2xl font-semibold">Entidades</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {entities.length} nodos del grafo.
-      </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Entidades</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {entities.length} nodos del grafo.
+          </p>
+        </div>
+        <GitHubSyncButton />
+      </div>
 
       <div className="mt-6 rounded-md border">
         <Table>

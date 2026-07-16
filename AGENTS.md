@@ -96,6 +96,32 @@ before guessing a name — this lineup moves fast and guessing burned real
 time. `withRetry()` in `llm.ts` already backs off on 503/429/socket-reset,
 but it won't save you from a model that's flatly deprecated or 0-quota.
 
+## GitHub integration (Fase 1, first one built)
+
+`src/lib/integrations/github.ts` + `POST /api/sync/github` — a **structural
+sync**, not an MCP tool call and not an LLM capture. GitHub's API already
+returns typed data, so there's nothing for a model to infer; it upserts
+`Entity(type: "repository")` rows and links them to existing `project`/
+`company` entities by name match (`has_repo`), using substring match on a
+normalized (lowercased, no spaces/hyphens/underscores) name — needed
+because `ofi-abundancia` doesn't equal `abundancia` but should still link.
+
+This deliberately isn't the "servidor MCP independiente que la IA puede
+usar como herramienta" from the architecture doc — that needs an agentic
+tool-calling loop to consume it, and the capture flow today is single-shot
+extraction, not a chat loop with tools. Building an MCP server nothing
+calls yet would be effort spent on the wrong layer. Revisit once there's a
+real chat/agent surface; until then, sync-then-store is honest and enough
+to prove the integration's contextual value.
+
+Uses `GITHUB_TOKEN` in `.env`, pulled once via `gh auth token` from the
+already-authenticated `gh` CLI rather than asking Valentín to mint a new
+PAT — zero new setup. **Only 2 repos are visible under this account**
+(`vida-os`, `ofi-abundancia`) — the repos Valentín described in the life
+inventory for Estudio VE, Mi Stock, Presidencial, Pelotita, and Avi Salud
+live somewhere else (a different account/org, possibly Roque's for Estudio
+VE). Unresolved — ask before assuming which account those are under.
+
 ## Notifications channel
 
 WhatsApp is the target (Valentín's daily ecosystem), not Telegram, despite
