@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+export const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export type ProposedEntity = {
   tempId: string;
@@ -120,7 +120,7 @@ function isTransient(err: unknown): boolean {
   return code === "UND_ERR_SOCKET" || code === "ECONNRESET";
 }
 
-async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
   for (let attempt = 1; ; attempt++) {
     try {
       return await fn();

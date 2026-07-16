@@ -122,6 +122,19 @@ inventory for Estudio VE, Mi Stock, Presidencial, Pelotita, and Avi Salud
 live somewhere else (a different account/org, possibly Roque's for Estudio
 VE). Unresolved — ask before assuming which account those are under.
 
+## Query engine (`/preguntar`, `src/lib/query.ts`)
+
+Whole-graph-in-context, not the vector/RAG "motor semántico" from the
+architecture doc — at hundreds of entities the entire graph is cheaper and
+more reliable to dump into one prompt than to build and keep an embeddings
+index in sync for. Tested live on "¿cuándo compré creatina...?" (answered
+correctly, admitted it doesn't have the exact date rather than guessing)
+and "¿quién es Jorge y qué pasó con esa amistad?" (correctly traced
+Jorge → Smithii → client relationship → Patagonia trip → friendship
+cooling) — both straight from the original pitch's example questions.
+Revisit with real pgvector retrieval once the graph outgrows a single
+context window; until then this is the honest, sufficient version.
+
 ## Notifications channel
 
 WhatsApp is the target (Valentín's daily ecosystem), not Telegram, despite

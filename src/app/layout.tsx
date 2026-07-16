@@ -35,6 +35,9 @@ export default function RootLayout({
             <Link href="/capture" className="text-muted-foreground hover:text-foreground">
               Capturar
             </Link>
+            <Link href="/preguntar" className="text-muted-foreground hover:text-foreground">
+              Preguntar
+            </Link>
             <Link href="/entities" className="text-muted-foreground hover:text-foreground">
               Entidades
             </Link>
