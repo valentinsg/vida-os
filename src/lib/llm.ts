@@ -93,17 +93,40 @@ Rules:
 
 Text: "${rawText}"`;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseJsonSchema: RESPONSE_SCHEMA,
-    },
-  });
+  const response = await withRetry(() =>
+    ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseJsonSchema: RESPONSE_SCHEMA,
+      },
+    })
+  );
 
   const text = response.text;
   if (!text) throw new Error("Gemini returned no content for capture proposal");
 
   return JSON.parse(text) as CaptureProposal;
+}
+
+// The free tier throws transient 503s ("high demand") and occasional raw
+// socket resets under load — both routinely recover within a few seconds,
+// so failing the user's capture on the first hiccup would be needless.
+function isTransient(err: unknown): boolean {
+  const status = (err as { status?: number })?.status;
+  if (status === 503 || status === 429) return true;
+  const code = (err as { cause?: { code?: string } })?.cause?.code;
+  return code === "UND_ERR_SOCKET" || code === "ECONNRESET";
+}
+
+async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt >= attempts || !isTransient(err)) throw err;
+      await new Promise((r) => setTimeout(r, 2 ** attempt * 500));
+    }
+  }
 }

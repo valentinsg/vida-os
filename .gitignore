@@ -42,3 +42,9 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# graphify: machine-local interpreter/path pointers, regenerated automatically
+# on next invocation — everything else in graphify-out/ (graph.json, the
+# report, the html viz, the semantic cache) is meant to travel with the repo
+graphify-out/.graphify_python
+graphify-out/.graphify_root

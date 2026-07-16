@@ -72,16 +72,29 @@ nothing extra, not because the threat model changed.
 
 ## LLM provider
 
-Gemini (`@google/genai`, `gemini-2.5-flash`), not Claude — deliberate: the
-Claude Code subscription doesn't include API credits, so the app's own LLM
-calls need separate billing, and Gemini's free tier keeps Fase 0 at zero
-cost while the capture flow is being validated. Structured output uses
-`responseJsonSchema` (not the older `responseSchema` field — SDK migrated
-to backend JSON Schema support since v1.9.0). `src/lib/llm.ts` is the only
-place that should call the SDK; swapping providers later means changing one
-file. Requires `GEMINI_API_KEY` in `.env` (get one free at
+Gemini (`@google/genai`, currently `gemini-3-flash-preview`), not Claude —
+deliberate: the Claude Code subscription doesn't include API credits, so the
+app's own LLM calls need separate billing, and Gemini's free tier keeps
+Fase 0 at zero cost while the capture flow is being validated. Structured
+output uses `responseJsonSchema` (not the older `responseSchema` field —
+SDK migrated to backend JSON Schema support since v1.9.0). `src/lib/llm.ts`
+is the only place that should call the SDK; swapping providers later means
+changing one file. Requires `GEMINI_API_KEY` in `.env` (get one free at
 aistudio.google.com/apikey) — capture won't work without it, though
 everything else (schema, seed, entity list) does.
+
+**On the model name churning:** `gemini-2.5-flash` is retired for new API
+keys (404), `gemini-2.0-flash` returned a hard 0-quota 429 specifically for
+this project's key, and the newest `gemini-3.5-flash` / `gemini-flash-latest`
+alias both threw persistent 503 ("high demand") — plausibly because they're
+the newest and everyone's hitting them. `gemini-3-flash-preview` (the
+default `graphify` itself uses for semantic extraction) is the one that
+actually worked end-to-end. If capture starts 500ing again, check
+`graphify-out/GRAPH_REPORT.md`'s last successful model or query
+`generativelanguage.googleapis.com/v1beta/models?key=$GEMINI_API_KEY`
+before guessing a name — this lineup moves fast and guessing burned real
+time. `withRetry()` in `llm.ts` already backs off on 503/429/socket-reset,
+but it won't save you from a model that's flatly deprecated or 0-quota.
 
 ## Notifications channel
 
