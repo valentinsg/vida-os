@@ -1,6 +1,7 @@
 // Seed with real entities from Valentín's life, not placeholder data.
 // Purpose: prove the two-table graph model actually holds the cross-domain
 // chains it's meant for (see CLAUDE.md, "why this shape") before any UI exists.
+import "dotenv/config";
 import { PrismaClient, Prisma } from "../src/generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 

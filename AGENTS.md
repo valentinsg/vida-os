@@ -70,6 +70,19 @@ committed; `.env` stays gitignored. Whatever Postgres this ends up pointed at
 encryption, DB not exposed raw to the internet, backups — because that costs
 nothing extra, not because the threat model changed.
 
+## LLM provider
+
+Gemini (`@google/genai`, `gemini-2.5-flash`), not Claude — deliberate: the
+Claude Code subscription doesn't include API credits, so the app's own LLM
+calls need separate billing, and Gemini's free tier keeps Fase 0 at zero
+cost while the capture flow is being validated. Structured output uses
+`responseJsonSchema` (not the older `responseSchema` field — SDK migrated
+to backend JSON Schema support since v1.9.0). `src/lib/llm.ts` is the only
+place that should call the SDK; swapping providers later means changing one
+file. Requires `GEMINI_API_KEY` in `.env` (get one free at
+aistudio.google.com/apikey) — capture won't work without it, though
+everything else (schema, seed, entity list) does.
+
 ## Notifications channel
 
 WhatsApp is the target (Valentín's daily ecosystem), not Telegram, despite
