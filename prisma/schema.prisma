@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Core graph model. Every entity in Valentín's life is a row here —
+// no per-domain tables. `type` and relationship `type` are open vocabulary
+// (validated in app code, not a Postgres enum) so new entity/relationship
+// kinds never require a migration.
+model Entity {
+  id         String   @id @default(cuid())
+  type       String
+  name       String
+  properties Json     @default("{}")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  outgoing Relationship[] @relation("SourceEntity")
+  incoming Relationship[] @relation("TargetEntity")
+
+  @@index([type])
+  @@index([name])
+}
+
+model Relationship {
+  id         String   @id @default(cuid())
+  type       String
+  sourceId   String
+  targetId   String
+  properties Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  source Entity @relation("SourceEntity", fields: [sourceId], references: [id], onDelete: Cascade)
+  target Entity @relation("TargetEntity", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([type])
+}
+
+// The tap-to-confirm capture flow: raw text in, LLM's proposed
+// entities/relationships staged here, nothing touches Entity/Relationship
+// until confirmed. Doubles as the memory log of how each fact was captured.
+model Capture {
+  id                    String    @id @default(cuid())
+  rawText               String
+  status                String    @default("pending") // pending | confirmed | edited | rejected
+  proposedEntities      Json
+  proposedRelationships Json
+  createdAt             DateTime  @default(now())
+  confirmedAt           DateTime?
+
+  @@index([status])
+}
