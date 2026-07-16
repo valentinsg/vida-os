@@ -38,6 +38,9 @@ export default function RootLayout({
             <Link href="/preguntar" className="text-muted-foreground hover:text-foreground">
               Preguntar
             </Link>
+            <Link href="/proximos" className="text-muted-foreground hover:text-foreground">
+              Próximos
+            </Link>
             <Link href="/entities" className="text-muted-foreground hover:text-foreground">
               Entidades
             </Link>
