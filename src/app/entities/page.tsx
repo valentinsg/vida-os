@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -36,7 +37,11 @@ export default async function EntitiesPage() {
           <TableBody>
             {entities.map((e) => (
               <TableRow key={e.id}>
-                <TableCell className="font-medium">{e.name}</TableCell>
+                <TableCell className="font-medium">
+                  <Link href={`/entities/${e.id}`} className="hover:underline">
+                    {e.name}
+                  </Link>
+                </TableCell>
                 <TableCell>
                   <Badge variant="secondary">{e.type}</Badge>
                 </TableCell>
