@@ -1,17 +1,18 @@
 # Roadmap — vida-os
 
-> Última actualización: 2026-07-16. Documento vivo — se actualiza al final de cada sesión de trabajo.
+> Última actualización: 2026-07-18. Documento vivo — se actualiza al final de cada sesión de trabajo.
 > El documento de producto completo (visión, objeciones, arquitectura) está publicado como artifact de Claude; pedirle el link a Valentín si hace falta.
+> **Repo**: https://github.com/valentinsg/vida-os (migrado el 2026-07-18 desde `abundancia33/vida-os`, que ya está borrado — Valentín no lo quería en esa cuenta).
 
 ## Estado actual (lo que ya funciona)
 
-- **Modelo de grafo**: `Entity` + `Relationship` + `Capture` en Postgres/Prisma, tipos de vocabulario abierto. Seed con datos reales de la vida de Valentín (41 entidades).
-- **Captura tap-to-confirm** (`/capture`): texto libre → Gemini propone entidades/relaciones → confirmás, editás (renombrar, cambiar tipo, quitar entidades) o descartás. Probado end-to-end con "Compré creatina".
+- **Modelo de grafo**: `Entity` + `Relationship` + `Capture` en Postgres/Prisma, tipos de vocabulario abierto. Seed con datos reales de la vida de Valentín (41 entidades) + ~66 repos sincronizados de GitHub.
+- **Captura tap-to-confirm** (`/capture`): texto libre → Gemini propone entidades/relaciones → confirmás, editás (renombrar, cambiar tipo, quitar entidades) o descartás. Probado end-to-end con "Compré creatina" y con un caso editado ("Pagué el gym").
 - **Consulta en lenguaje natural** (`/preguntar`): grafo completo en contexto, responde con citas a entidades. Probado con las preguntas del pitch original.
 - **Próximos** (`/proximos`): recordatorios y vencimientos ordenados por fecha (vacuna gatos, deuda expensas con vencimiento 20/07).
 - **Entidades** (`/entities`): lista con filtro por tipo, detalle con relaciones navegables, edición inline de nombre/propiedades.
-- **GitHub sync** (botón en `/entities`): trae repos y los vincula a proyectos por nombre. **Parcial** — ver pendientes.
-- **graphify**: el código del proyecto está indexado en `graphify-out/` (consultar el grafo antes de releer archivos en frío).
+- **GitHub sync** (botón en `/entities`): trae repos de `valentinsg` (66 repos) y los vincula a proyectos por nombre — **resuelto**, Estudio VE, Mi Stock, Presidencial, Pelotita y Avi Salud ya están todos linkeados.
+- **graphify**: el código del proyecto está indexado en `graphify-out/` (consultar el grafo antes de releer archivos en frío). Desactualizado desde el 2026-07-16 — correr `--update` cuando se retome.
 
 ## ⚠️ Para retomar en otra máquina (esta se borra)
 
@@ -21,7 +22,7 @@ El repo viaja completo salvo `.env`. Al clonar:
 2. Crear `.env` desde `.env.example`:
    - `DATABASE_URL` → `npx prisma dev` la imprime al arrancar (o apuntar a la DB definitiva cuando exista)
    - `GEMINI_API_KEY` → la existente de AI Studio o una nueva en aistudio.google.com/apikey (formato `AIzaSy...`; las `AQ....` están rotas — ver AGENTS.md)
-   - `GITHUB_TOKEN` → `gh auth token` con el gh CLI autenticado
+   - `GITHUB_TOKEN` → `gh auth token` con el gh CLI autenticado **como `valentinsg`** (no `abundancia33` — esa cuenta ya no se usa para este proyecto)
 3. `npx prisma db push` + `npm run db:seed`
 4. `npm run dev`
 
@@ -30,8 +31,8 @@ El repo viaja completo salvo `.env`. Al clonar:
 ## Pendiente inmediato (siguiente sesión)
 
 - [ ] **Borrar entidades y relaciones desde la UI** — hoy solo se puede crear y editar; borrar requiere script manual.
-- [ ] **Commitear captura editada quedó probado por API pero falta probar la UI de edición en navegador real** (el flujo de tap "Editar" en `/capture`).
-- [ ] **Repos faltantes de GitHub**: bajo `abundancia33` solo existen `vida-os` y `ofi-abundancia`. Los repos de Estudio VE, Mi Stock, Presidencial, Pelotita y Avi Salud viven en otra cuenta/org — **preguntar a Valentín cuál** y agregar ese token/org al sync.
+- [ ] **Probar en navegador real el flujo de tap "Editar" en `/capture`** — el contrato de API ya está probado (renombrar, cambiar tipo, quitar entidades), falta la prueba manual de la UI interactiva.
+- [ ] **`My-Stock` es el único repo que no auto-linkeó** (el nombre real no coincide con "Mi Stock" por el cambio Mi→My) — se linkeó a mano una vez; si se vuelve a perder en un re-sync, no es un bug, solo falta mejorar `normalizeForMatch` para variantes fonéticas o volver a linkear a mano.
 - [ ] **Decidir hosting definitivo de la DB** (criterio: lo más barato). Candidatos: Oracle Cloud free tier, VPS barato, o la propia PC con Docker. Incluye la higiene mínima gratis: disco cifrado, Postgres no expuesto a internet, backups.
 
 ## Fase 1 restante (contexto externo)

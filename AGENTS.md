@@ -114,13 +114,21 @@ calls yet would be effort spent on the wrong layer. Revisit once there's a
 real chat/agent surface; until then, sync-then-store is honest and enough
 to prove the integration's contextual value.
 
-Uses `GITHUB_TOKEN` in `.env`, pulled once via `gh auth token` from the
+Uses `GITHUB_TOKEN` in `.env`, pulled via `gh auth token` from the
 already-authenticated `gh` CLI rather than asking Valentín to mint a new
-PAT — zero new setup. **Only 2 repos are visible under this account**
-(`vida-os`, `ofi-abundancia`) — the repos Valentín described in the life
-inventory for Estudio VE, Mi Stock, Presidencial, Pelotita, and Avi Salud
-live somewhere else (a different account/org, possibly Roque's for Estudio
-VE). Unresolved — ask before assuming which account those are under.
+PAT — zero new setup. **Resolved (2026-07-18):** the repo itself, and the
+GitHub sync, both moved from `abundancia33` to `valentinsg` — that's
+Valentín's real account (matches his portfolio), with 66 repos including
+Estudio VE, Mi Stock, Presidencial, Pelotita, and Avi Salud, all linked
+except one: `My-Stock` doesn't substring-match "Mi Stock" (Mi→My isn't
+caught by `normalizeForMatch`), linked manually once. If re-syncing ever
+drops it, it's not a bug — just re-link that one pair.
+
+The project also moved GitHub *identity* itself, not just the sync data —
+Valentín didn't want vida-os hosted under `abundancia33` at all. If `git
+push` ever fails with "Repository not found" again, it's almost always the
+gh-CLI-vs-git credential mismatch (fix: `gh auth setup-git`), not a sign
+the repo moved again — check `git remote -v` before assuming the latter.
 
 ## Query engine (`/preguntar`, `src/lib/query.ts`)
 
