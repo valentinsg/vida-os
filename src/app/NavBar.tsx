@@ -7,6 +7,7 @@ const LINKS = [
   { href: "/capture", label: "Capturar" },
   { href: "/preguntar", label: "Preguntar" },
   { href: "/proximos", label: "Próximos" },
+  { href: "/timeline", label: "Timeline" },
   { href: "/entities", label: "Entidades" },
 ];
 

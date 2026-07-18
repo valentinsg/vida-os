@@ -11,6 +11,7 @@
 - **Captura tap-to-confirm** (`/capture`): texto libre → Gemini propone entidades/relaciones → confirmás, editás (renombrar, cambiar tipo, quitar entidades) o descartás. Probado end-to-end con "Compré creatina" y con un caso editado ("Pagué el gym").
 - **Consulta en lenguaje natural** (`/preguntar`): grafo completo en contexto, responde con citas a entidades. Probado con las preguntas del pitch original.
 - **Próximos** (`/proximos`): recordatorios y vencimientos ordenados por fecha (vacuna gatos, deuda expensas con vencimiento 20/07).
+- **Timeline** (`/timeline`): historial cronológico de todo lo capturado, agrupado por día.
 - **Entidades** (`/entities`): lista con filtro por tipo, detalle con relaciones navegables, edición inline de nombre/propiedades, y borrado (de la entidad completa o de una relación puntual, con confirmación).
 - **GitHub sync** (botón en `/entities`): trae repos de `valentinsg` (66 repos) y los vincula a proyectos por nombre — **resuelto**, Estudio VE, Mi Stock, Presidencial, Pelotita y Avi Salud ya están todos linkeados.
 - **graphify**: el código del proyecto está indexado en `graphify-out/` (consultar el grafo antes de releer archivos en frío). Desactualizado desde el 2026-07-16 — correr `--update` cuando se retome.
@@ -40,7 +41,7 @@ El repo viaja completo salvo `.env`. Al clonar:
 - [ ] **Google Calendar** — requiere proyecto en Google Cloud + OAuth consent. Es la integración que más contexto diario aporta.
 - [ ] **Fuente financiera** — Mercado Pago / Brubank / Personal Pay. La más sensible; definir enfoque (API oficial vs export manual) antes de tocar credenciales.
 - [ ] **Notificaciones WhatsApp (salida)** — CallMeBot: gratis, solo unidireccional (avisos, no comandos). Caso de uso: resumen diario de `/proximos` cada mañana. Requiere un cron/scheduler (el hosting de la DB probablemente defina dónde corre).
-- [ ] **Timeline** (`/timeline`) — línea temporal de todo lo que tiene fecha (capturas, compras, eventos). El dato ya existe (`createdAt` + fechas en properties); es solo vista.
+- [x] **Timeline** (`/timeline`) — hecho. Muestra las `Capture` confirmadas/editadas agrupadas por día, más reciente primero. Deliberadamente no incluye repos de GitHub ni creación de entidades del seed (serían 66+ entradas de ruido) — si hace falta ampliarlo a otras fuentes de fecha, hacerlo como una fuente aparte, no mezclado con el log de capturas.
 - [ ] **Embeddings/pgvector** — recién cuando el grafo no entre en un prompt (~miles de entidades). Hoy sería sobre-ingeniería; documentado en AGENTS.md.
 
 ## Fase 2 (el universo)
