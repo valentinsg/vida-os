@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
-import { GitHubSyncButton } from "./GitHubSyncButton";
+import { SyncButton } from "./SyncButton";
 import {
   Table,
   TableBody,
@@ -38,7 +38,10 @@ export default async function EntitiesPage({ searchParams }: Props) {
             {entities.length} nodos {type ? `de tipo "${type}"` : "del grafo"}.
           </p>
         </div>
-        <GitHubSyncButton />
+        <div className="flex gap-2">
+          <SyncButton endpoint="/api/sync/github" label="Sincronizar GitHub" kind="github" />
+          <SyncButton endpoint="/api/sync/calendar" label="Sincronizar Calendar" kind="calendar" />
+        </div>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-1.5">

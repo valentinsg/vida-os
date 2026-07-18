@@ -120,15 +120,73 @@ PAT — zero new setup. **Resolved (2026-07-18):** the repo itself, and the
 GitHub sync, both moved from `abundancia33` to `valentinsg` — that's
 Valentín's real account (matches his portfolio), with 66 repos including
 Estudio VE, Mi Stock, Presidencial, Pelotita, and Avi Salud, all linked
-except one: `My-Stock` doesn't substring-match "Mi Stock" (Mi→My isn't
-caught by `normalizeForMatch`), linked manually once. If re-syncing ever
-drops it, it's not a bug — just re-link that one pair.
+except one: the repo (`Estudio-Ve-Argentina/My-Stock`, still called that on
+GitHub as of 2026-07-18 — a shared org repo with Roque, so renaming it on
+GitHub itself needs his sign-off too, not just Valentín's) didn't
+substring-match "Mi Stock". Valentín chose to alias it in his own graph as
+"Stockeo" instead of touching the real GitHub repo — linked manually once.
+
+**Renames no longer break this** (fixed 2026-07-18, same session as the
+Stockeo alias): matching now keys off GitHub's numeric `id`
+(`properties.githubId`), stable across renames, falling back to name only
+for entities synced before this field existed. And critically, **re-sync
+only sets `Entity.name` on first creation** — `properties.githubName`
+always tracks the real current GitHub name, but the display `name` is the
+user's to keep, since he may alias it away from the GitHub name on
+purpose. Before this fix, every sync silently overwrote any manual rename
+back to GitHub's name — first found when Valentín renamed this exact
+entity and it snapped back until the fix landed.
 
 The project also moved GitHub *identity* itself, not just the sync data —
 Valentín didn't want vida-os hosted under `abundancia33` at all. If `git
 push` ever fails with "Repository not found" again, it's almost always the
 gh-CLI-vs-git credential mismatch (fix: `gh auth setup-git`), not a sign
 the repo moved again — check `git remote -v` before assuming the latter.
+
+## CallMeBot (WhatsApp notifications, one-way)
+
+`src/lib/integrations/callmebot.ts` + `POST /api/notify/whatsapp` — sends
+Valentín a WhatsApp summary of what's due soon (`getProximos()`, shared
+with the `/proximos` page so the two never drift), capped to a 14-day
+window plus a count of undated pendings, so it stays a nudge and never
+grows into pasting the whole page as the graph grows. **Outbound
+only** — CallMeBot can't receive replies or commands, by design of the
+free API itself (see ROADMAP.md's original research on this). Needs
+`CALLMEBOT_PHONE`/`CALLMEBOT_APIKEY` in `.env`; Valentín gets the key by
+messaging CallMeBot's own WhatsApp contact once with "I allow callmebot to
+send me messages" — nothing this codebase can automate. No cron wired up
+yet either — the endpoint exists, but *triggering* it daily needs a
+scheduler, which needs the hosting decision first (still open, see
+ROADMAP.md).
+
+## Google Calendar
+
+`src/lib/integrations/google-calendar.ts` + three routes:
+`GET /api/auth/google` (redirects to Google's consent screen — visit in a
+real browser, never curl), `GET /api/auth/google/callback` (exchanges the
+code for tokens, prints the `refresh_token` **once** — copy it to `.env`
+as `GOOGLE_REFRESH_TOKEN` immediately, `prompt=consent` forces Google to
+reissue it if it's ever lost), and `POST /api/sync/calendar` (structural
+sync of the next 30 days, same shape as GitHub's — `Entity(type: "event")`
+keyed on `properties.googleEventId`, name preserved on update same as the
+GitHub fix above).
+
+Bonus over GitHub's sync: event→entity linking isn't restricted to
+project/company — it substring-matches the event's `summary` against
+*every* entity's name (`mentioned_in`), because a calendar event is far
+more likely to mention a person or pet ("Turno Terry", "Cumpleaños
+Marina") than a project.
+
+**Needs Valentín to do the actual Google Cloud setup — not automatable
+from here:** create a project at console.cloud.google.com, enable the
+Google Calendar API, configure an OAuth consent screen (External is fine
+for personal use), create an OAuth Client ID (Web application, redirect
+URI `http://localhost:3000/api/auth/google/callback` for now), then put
+`GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` in `.env` and visit
+`/api/auth/google` once in a browser to get the refresh token. Untested
+end-to-end for exactly this reason — the code paths return clean errors
+(500, not a crash) when these env vars are missing, confirmed live, but
+the real OAuth round-trip has not run yet.
 
 ## Query engine (`/preguntar`, `src/lib/query.ts`)
 

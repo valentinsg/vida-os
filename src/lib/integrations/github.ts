@@ -1,4 +1,5 @@
 export type GitHubRepo = {
+  githubId: number;
   name: string;
   description: string | null;
   url: string;
@@ -28,6 +29,7 @@ export async function fetchUserRepos(): Promise<GitHubRepo[]> {
   }
 
   const repos = (await res.json()) as Array<{
+    id: number;
     name: string;
     description: string | null;
     html_url: string;
@@ -38,6 +40,7 @@ export async function fetchUserRepos(): Promise<GitHubRepo[]> {
   }>;
 
   return repos.map((r) => ({
+    githubId: r.id,
     name: r.name,
     description: r.description,
     url: r.html_url,

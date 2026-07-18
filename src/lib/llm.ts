@@ -70,7 +70,7 @@ const KNOWN_RELATIONSHIP_TYPES = [
   "works_at", "client_of", "partner_in", "friend_of", "family_of", "owns",
   "inherited_from", "lives_at", "part_of", "developed_by", "collaborates_on",
   "uses", "wants", "scheduled_for", "located_in", "visited", "plays_with",
-  "inspired_by", "paid_via", "linked_to",
+  "inspired_by", "paid_via", "linked_to", "mentioned_in", "has_repo",
 ];
 
 export async function proposeCapture(
