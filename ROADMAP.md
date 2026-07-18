@@ -30,18 +30,20 @@ El repo viaja completo salvo `.env`. Al clonar:
 
 **La DB local es efímera** — los datos capturados después del seed (compra de creatina confirmada, fecha de vencimiento de la deuda) viven solo en esta máquina y se pierden. El seed reconstruye la base.
 
-## Pendiente inmediato (siguiente sesión)
+## 👉 Empezar acá la próxima sesión
 
-- [ ] **Probar en navegador real el flujo de tap "Editar" en `/capture`** — el contrato de API ya está probado (renombrar, cambiar tipo, quitar entidades), falta la prueba manual de la UI interactiva.
-- [ ] **`My-Stock` es el único repo que no auto-linkeó** (el nombre real no coincide con "Mi Stock" por el cambio Mi→My) — se linkeó a mano una vez; si se vuelve a perder en un re-sync, no es un bug, solo falta mejorar `normalizeForMatch` para variantes fonéticas o volver a linkear a mano.
-- [ ] **Decidir hosting definitivo de la DB** (criterio: lo más barato). Candidatos: Oracle Cloud free tier, VPS barato, o la propia PC con Docker. Incluye la higiene mínima gratis: disco cifrado, Postgres no expuesto a internet, backups.
+En orden de prioridad real:
+
+1. **Decidir hosting definitivo de la DB** (criterio: lo más barato) — es lo único que bloquea todo lo demás en serio (cron para WhatsApp, dejar de depender de `npx prisma dev` efímero, subir la app a algún lado). Candidatos: Oracle Cloud free tier, VPS barato, o la propia PC con Docker. Incluye higiene mínima gratis: disco cifrado, Postgres no expuesto a internet, backups. **Necesita una decisión de Valentín, no se puede avanzar solo.**
+2. **Google Calendar o notificaciones WhatsApp (CallMeBot)** — las dos integraciones de Fase 1 que quedan y son buildeables sin bloquear en el hosting. CallMeBot es más liviano (un mensaje de WhatsApp para sacar la key); Calendar necesita crear un proyecto en Google Cloud.
+3. **Probar en navegador real el flujo de tap "Editar" en `/capture`** — el contrato de API ya está probado por curl (renombrar, cambiar tipo, quitar entidades), falta la prueba manual interactiva.
+4. **`My-Stock` es el único repo que no auto-linkeó** en el sync de GitHub (el nombre real no coincide con "Mi Stock" por el cambio Mi→My) — se linkeó a mano una vez; si se pierde en un re-sync no es un bug, solo hay que volver a linkear o mejorar `normalizeForMatch`.
 
 ## Fase 1 restante (contexto externo)
 
 - [ ] **Google Calendar** — requiere proyecto en Google Cloud + OAuth consent. Es la integración que más contexto diario aporta.
 - [ ] **Fuente financiera** — Mercado Pago / Brubank / Personal Pay. La más sensible; definir enfoque (API oficial vs export manual) antes de tocar credenciales.
 - [ ] **Notificaciones WhatsApp (salida)** — CallMeBot: gratis, solo unidireccional (avisos, no comandos). Caso de uso: resumen diario de `/proximos` cada mañana. Requiere un cron/scheduler (el hosting de la DB probablemente defina dónde corre).
-- [x] **Timeline** (`/timeline`) — hecho. Muestra las `Capture` confirmadas/editadas agrupadas por día, más reciente primero. Deliberadamente no incluye repos de GitHub ni creación de entidades del seed (serían 66+ entradas de ruido) — si hace falta ampliarlo a otras fuentes de fecha, hacerlo como una fuente aparte, no mezclado con el log de capturas.
 - [ ] **Embeddings/pgvector** — recién cuando el grafo no entre en un prompt (~miles de entidades). Hoy sería sobre-ingeniería; documentado en AGENTS.md.
 
 ## Fase 2 (el universo)
