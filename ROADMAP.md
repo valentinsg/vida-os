@@ -6,6 +6,7 @@
 
 ## Estado actual (lo que ya funciona)
 
+- **Identidad visual**: tema oscuro por defecto, paleta propia (moss-green/grafito, la misma familia del documento de producto original) en vez de shadcn gris de fábrica. Tipografía (Geist Sans/Mono) sin cambios — ya era una buena elección, no la genérica Inter. Falta el layout de sidebar (Fase 2).
 - **Modelo de grafo**: `Entity` + `Relationship` + `Capture` en Postgres/Prisma, tipos de vocabulario abierto. Seed con datos reales de la vida de Valentín (41 entidades) + ~66 repos sincronizados de GitHub.
 - **Captura tap-to-confirm** (`/capture`): texto libre → Gemini propone entidades/relaciones → confirmás, editás (renombrar, cambiar tipo, quitar entidades) o descartás. Probado end-to-end con "Compré creatina" y con un caso editado ("Pagué el gym").
 - **Consulta en lenguaje natural** (`/preguntar`): grafo completo en contexto, responde con citas a entidades. Probado con las preguntas del pitch original.
@@ -45,7 +46,7 @@ El repo viaja completo salvo `.env`. Al clonar:
 ## Fase 2 (el universo)
 
 - [ ] **Canvas espacial** — react-flow o cosmos.gl: zoom, pan, drag, agrupar. La feature-firma del pitch, pospuesta a propósito hasta que el grafo esté poblado de verdad.
-- [ ] **Layout tipo sidebar por dominios** (referencia: screenshot "Hyperion Core" que pasó Valentín — sidebar con Wellness/Media/Data/Integraciones, command palette Ctrl+K). Hoy la nav simple alcanza; esto es para cuando haya más vistas.
+- [ ] **Layout tipo sidebar por dominios** (referencia: screenshot "Hyperion Core" que pasó Valentín — sidebar con Wellness/Media/Data/Integraciones, command palette Ctrl+K). La identidad visual (paleta, tema oscuro) ya está — falta la estructura de sidebar en sí, para cuando haya más vistas.
 
 ## Fase 3 (el sistema que te conoce)
 
