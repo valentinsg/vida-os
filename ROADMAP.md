@@ -10,7 +10,7 @@
 - **Captura tap-to-confirm** (`/capture`): texto libre → Gemini propone entidades/relaciones → confirmás, editás (renombrar, cambiar tipo, quitar entidades) o descartás. Probado end-to-end con "Compré creatina" y con un caso editado ("Pagué el gym").
 - **Consulta en lenguaje natural** (`/preguntar`): grafo completo en contexto, responde con citas a entidades. Probado con las preguntas del pitch original.
 - **Próximos** (`/proximos`): recordatorios y vencimientos ordenados por fecha (vacuna gatos, deuda expensas con vencimiento 20/07).
-- **Entidades** (`/entities`): lista con filtro por tipo, detalle con relaciones navegables, edición inline de nombre/propiedades.
+- **Entidades** (`/entities`): lista con filtro por tipo, detalle con relaciones navegables, edición inline de nombre/propiedades, y borrado (de la entidad completa o de una relación puntual, con confirmación).
 - **GitHub sync** (botón en `/entities`): trae repos de `valentinsg` (66 repos) y los vincula a proyectos por nombre — **resuelto**, Estudio VE, Mi Stock, Presidencial, Pelotita y Avi Salud ya están todos linkeados.
 - **graphify**: el código del proyecto está indexado en `graphify-out/` (consultar el grafo antes de releer archivos en frío). Desactualizado desde el 2026-07-16 — correr `--update` cuando se retome.
 
@@ -30,7 +30,6 @@ El repo viaja completo salvo `.env`. Al clonar:
 
 ## Pendiente inmediato (siguiente sesión)
 
-- [ ] **Borrar entidades y relaciones desde la UI** — hoy solo se puede crear y editar; borrar requiere script manual.
 - [ ] **Probar en navegador real el flujo de tap "Editar" en `/capture`** — el contrato de API ya está probado (renombrar, cambiar tipo, quitar entidades), falta la prueba manual de la UI interactiva.
 - [ ] **`My-Stock` es el único repo que no auto-linkeó** (el nombre real no coincide con "Mi Stock" por el cambio Mi→My) — se linkeó a mano una vez; si se vuelve a perder en un re-sync, no es un bug, solo falta mejorar `normalizeForMatch` para variantes fonéticas o volver a linkear a mano.
 - [ ] **Decidir hosting definitivo de la DB** (criterio: lo más barato). Candidatos: Oracle Cloud free tier, VPS barato, o la propia PC con Docker. Incluye la higiene mínima gratis: disco cifrado, Postgres no expuesto a internet, backups.

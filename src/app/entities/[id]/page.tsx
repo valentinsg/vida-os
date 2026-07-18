@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
 import { EntityEditForm } from "./EntityEditForm";
+import { DeleteEntityButton } from "./DeleteEntityButton";
+import { DeleteRelationshipButton } from "./DeleteRelationshipButton";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +30,9 @@ export default async function EntityDetailPage({ params }: { params: Promise<{ i
         <Badge variant="secondary">{entity.type}</Badge>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 flex items-center gap-2">
         <EntityEditForm id={entity.id} name={entity.name} properties={entity.properties} />
+        <DeleteEntityButton id={entity.id} name={entity.name} />
       </div>
 
       <section className="mt-8">
@@ -38,11 +41,12 @@ export default async function EntityDetailPage({ params }: { params: Promise<{ i
         </h2>
         <ul className="mt-2 space-y-1">
           {entity.outgoing.map((r) => (
-            <li key={r.id} className="text-sm">
+            <li key={r.id} className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">{r.type}</span>{" "}
               <Link href={`/entities/${r.target.id}`} className="underline underline-offset-2">
                 {r.target.name}
               </Link>
+              <DeleteRelationshipButton id={r.id} />
             </li>
           ))}
           {entity.outgoing.length === 0 && (
@@ -57,12 +61,13 @@ export default async function EntityDetailPage({ params }: { params: Promise<{ i
         </h2>
         <ul className="mt-2 space-y-1">
           {entity.incoming.map((r) => (
-            <li key={r.id} className="text-sm">
+            <li key={r.id} className="flex items-center gap-2 text-sm">
               <Link href={`/entities/${r.source.id}`} className="underline underline-offset-2">
                 {r.source.name}
               </Link>{" "}
               <span className="text-muted-foreground">{r.type}</span>{" "}
               <span className="text-muted-foreground">esto</span>
+              <DeleteRelationshipButton id={r.id} />
             </li>
           ))}
           {entity.incoming.length === 0 && (

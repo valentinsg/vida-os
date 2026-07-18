@@ -29,3 +29,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const updated = await db.entity.update({ where: { id }, data });
   return NextResponse.json(updated);
 }
+
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  // onDelete: Cascade on Relationship.source/target drops its edges too.
+  await db.entity.delete({ where: { id } });
+  return NextResponse.json({ deleted: true });
+}
